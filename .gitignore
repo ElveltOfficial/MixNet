@@ -1,0 +1,27 @@
+# ビルド出力
+/out/
+/*.o
+*.obj
+*.exe
+*.dll
+*.lib
+*.so
+*.a
+*.out
+
+# Visual Studioの設定
+.vs/
+*.suo
+*.user
+*.VC.db
+*.VC.opendb
+
+# CMakeキャッシュと生成物
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# その他一時ファイル
+*.log
+*.tmp
