@@ -3,7 +3,7 @@
 #include <string.h>
 #include <sodium.h>
 
-int create_encrypted_packets(const uint8_t* msg, size_t msg_len,
+ssize_t create_encrypted_packets(const uint8_t* msg, size_t msg_len,
     const uint8_t key[32], uint32_t message_id,
     EncryptedPacket* packets, size_t max_packets,
     uint8_t sender_id, const uint8_t* route, uint8_t hop_count) {
@@ -32,7 +32,7 @@ int create_encrypted_packets(const uint8_t* msg, size_t msg_len,
         p->payload_len = (uint16_t)chunk_size;
     }
 
-    return (int)total;
+    return (ssize_t)total;
 }
 
 int decrypt_packet(const EncryptedPacket* packet,

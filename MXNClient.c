@@ -178,12 +178,16 @@ int main() {
 
             size_t msg_len = strlen(message);
             EncryptedPacket packets[16];
-            int pkt_count = create_encrypted_packets(
+            ssize_t pkt_count = create_encrypted_packets(
                 (const uint8_t*)message, msg_len, shared_key, (uint32_t)rand(),
                 packets, 16, my_id, route, route_len);
 
-            if (pkt_count <= 0) {
+            if (pkt_count < 0) {
                 fprintf(stderr, "Packet creation failed\n");
+                continue;
+            }
+            if (pkt_count == 0) {
+                fprintf(stderr, "No packets created\n");
                 continue;
             }
 
@@ -198,7 +202,7 @@ int main() {
                 }
             }
 
-            printf("Sent %d packets to next hop ID %d\n", pkt_count, next_hop->id);
+            printf("Sent %zd packets to next hop ID %d\n", pkt_count, next_hop->id);
         }
     }
 

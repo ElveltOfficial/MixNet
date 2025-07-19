@@ -3,6 +3,13 @@
 
 #include <stdint.h>
 
+#if defined(_WIN32) || defined(_WIN64)
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#else
+#include <sys/types.h>
+#endif
+
 #define MAX_PAYLOAD_SIZE 256
 #define MAX_ROUTE_LEN 8
 #define NONCE_BYTES 12
@@ -20,7 +27,7 @@ typedef struct {
     uint8_t encrypted[MAX_PAYLOAD_SIZE];
 } EncryptedPacket;
 
-int create_encrypted_packets(const uint8_t* msg, size_t msg_len,
+ssize_t create_encrypted_packets(const uint8_t* msg, size_t msg_len,
     const uint8_t key[32], uint32_t message_id,
     EncryptedPacket* packets, size_t max_packets,
     uint8_t sender_id, const uint8_t* route, uint8_t hop_count);
