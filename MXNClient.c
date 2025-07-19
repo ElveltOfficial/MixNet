@@ -201,10 +201,10 @@ int main() {
                     fprintf(stderr, "Failed to send packet %d to next hop\n", i);
                 }
             }
-
+            sodium_memzero(shared_key, sizeof(shared_key));
             printf("Sent %zd packets to next hop ID %d\n", pkt_count, next_hop->id);
         }
     }
-
+    sodium_memzero(my_private_key, sizeof(my_private_key));
     return 0;
 }

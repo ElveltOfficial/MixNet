@@ -26,10 +26,9 @@ ssize_t create_encrypted_packets(const uint8_t* msg, size_t msg_len,
         memcpy(p->route, route, hop_count * sizeof(uint8_t));
         randombytes_buf(p->nonce, NONCE_BYTES);
         chacha20_encrypt(p->encrypted, msg + offset, chunk_size, key, p->nonce);
-
         p->payload_len = (uint16_t)chunk_size;
     }
-
+    sodium_memzero((void*)key, 32);
     return total;
 }
 
@@ -40,6 +39,7 @@ int decrypt_packet(const EncryptedPacket* packet,
     if (decrypt_len > out_max) decrypt_len = out_max;
 
     int ret = chacha20_decrypt(out_buf, packet->encrypted, decrypt_len, key, packet->nonce);
+    sodium_memzero((void*)key, 32);
     if (ret != 0) return -1;
     return (int)decrypt_len;
 }
