@@ -8,10 +8,10 @@ ssize_t create_encrypted_packets(const uint8_t* msg, size_t msg_len,
     EncryptedPacket* packets, size_t max_packets,
     uint8_t sender_id, const uint8_t* route, uint8_t hop_count) {
 
-    size_t total = (msg_len + MAX_PAYLOAD_SIZE - 1) / MAX_PAYLOAD_SIZE;
+    ssize_t total = (msg_len + MAX_PAYLOAD_SIZE - 1) / MAX_PAYLOAD_SIZE;
     if (total > max_packets) return -1;
 
-    for (size_t i = 0; i < total; ++i) {
+    for (ssize_t i = 0; i < total; ++i) {
         size_t offset = i * MAX_PAYLOAD_SIZE;
         size_t chunk_size = (msg_len - offset > MAX_PAYLOAD_SIZE) ? MAX_PAYLOAD_SIZE : (msg_len - offset);
 
@@ -20,19 +20,17 @@ ssize_t create_encrypted_packets(const uint8_t* msg, size_t msg_len,
         p->seq = (uint16_t)i;
         p->total = (uint16_t)total;
         p->sender_id = sender_id;
-
         p->hop_count = hop_count;
         p->hop_index = 0;
         memset(p->route, 0, MAX_ROUTE_LEN);
         memcpy(p->route, route, hop_count * sizeof(uint8_t));
-
         randombytes_buf(p->nonce, NONCE_BYTES);
         chacha20_encrypt(p->encrypted, msg + offset, chunk_size, key, p->nonce);
 
         p->payload_len = (uint16_t)chunk_size;
     }
 
-    return (ssize_t)total;
+    return total;
 }
 
 int decrypt_packet(const EncryptedPacket* packet,
